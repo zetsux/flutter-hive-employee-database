@@ -1,17 +1,23 @@
-class Student {
+class Employee {
   String name;
   String number;
+  String position;
   String email;
   String phone;
+  String address;
   String birthDate;
-  Map<dynamic, dynamic> grades;
+  String wage;
+  String note;
 
-  Student({
+  Employee({
     required this.name,
     required this.number,
+    required this.position,
     required this.email,
     required this.phone,
+    required this.address,
     required this.birthDate,
-    required this.grades,
+    required this.wage,
+    required this.note,
   });
 }

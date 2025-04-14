@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hive_assignment/components/student_card.dart';
-import 'package:flutter_hive_assignment/model/student.dart';
+import 'package:flutter_hive_assignment/components/employee_card.dart';
+import 'package:flutter_hive_assignment/detail_page.dart';
+import 'package:flutter_hive_assignment/model/employee.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
 
@@ -12,88 +13,79 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final _studentBox = Hive.box("student_box");
-  final _idBox = Hive.box("student_id");
+  final _employeeBox = Hive.box("employee_box");
+  final _idBox = Hive.box("employee_id");
 
-  void saveStudent(Student student) {
-    var studentID = _idBox.get('student_id');
-    if (studentID == null) {
-      studentID = 1;
-      _idBox.put('student_id', studentID);
+  void saveEmployee(Employee employee) {
+    var employeeID = _idBox.get('employee_id');
+    if (employeeID == null) {
+      employeeID = 1;
+      _idBox.put('employee_id', employeeID);
     } else {
-      studentID++;
+      employeeID++;
     }
 
-    final newStudent = {
-      'id': studentID,
-      'name': student.name,
-      'number': student.number,
-      'email': student.email,
-      'phone': student.phone,
-      'birth_date': student.birthDate,
-      'grades': student.grades,
+    final newEmployee = {
+      'id': employeeID,
+      'name': employee.name,
+      'number': employee.number,
+      'position': employee.position,
+      'email': employee.email,
+      'phone': employee.phone,
+      'address': employee.address,
+      'birth_date': employee.birthDate,
+      'wage': employee.wage,
+      'note': employee.note,
     };
-    _studentBox.put(studentID, newStudent);
-    _idBox.put('student_id', studentID);
+    _employeeBox.put(employeeID, newEmployee);
+    _idBox.put('employee_id', employeeID);
   }
 
-  void updateStudent(Student student, int studentID) {
-    if (studentID != 0) {
-      final newStudent = {
-        'id': studentID,
-        'name': student.name,
-        'number': student.number,
-        'email': student.email,
-        'phone': student.phone,
-        'birth_date': student.birthDate,
-        'grades': student.grades,
-      };
-      _studentBox.put(studentID, newStudent);
-    }
+  void deleteEmployee(int id) {
+    _employeeBox.delete(id);
   }
 
-  void deleteStudent(int id) {
-    _studentBox.delete(id);
-  }
-
-  void _addStudent() {
-    final newStudent = Student(
+  void _addEmployee() {
+    final newEmployee = Employee(
       name: "",
       number: "",
+      position: "",
       email: "",
       phone: "",
+      address: "",
       birthDate: "",
-      grades: {},
+      wage: "",
+      note: "",
     );
-    _editStudent(newStudent, isNew: true);
+    _fillEmployeeInformation(newEmployee);
   }
 
-  void clearStudent() {
-    _studentBox.clear();
+  void clearEmployee() {
+    _employeeBox.clear();
   }
 
-  void _editStudent(Student student, {bool isNew = false, int studentID = 0}) {
+  void _fillEmployeeInformation(Employee employee) {
     TextEditingController nameController = TextEditingController(
-      text: student.name,
+      text: employee.name,
     );
     TextEditingController numberController = TextEditingController(
-      text: student.number,
+      text: employee.number,
+    );
+    TextEditingController positionController = TextEditingController(
+      text: employee.position,
     );
     TextEditingController emailController = TextEditingController(
-      text: student.email,
+      text: employee.email,
     );
     TextEditingController phoneController = TextEditingController(
-      text: student.phone,
-    );
-    TextEditingController birthDateController = TextEditingController(
-      text: student.birthDate,
+      text: employee.phone,
     );
 
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(isNew ? "Add Student" : "Edit Student"),
+          title: const Text("Add Employee"),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -103,8 +95,12 @@ class _HomePageState extends State<HomePage> {
               ),
               TextField(
                 controller: numberController,
-                decoration: const InputDecoration(labelText: "Student Number"),
+                decoration: const InputDecoration(labelText: "Employee Number"),
                 keyboardType: TextInputType.number,
+              ),
+              TextField(
+                controller: positionController,
+                decoration: const InputDecoration(labelText: "Position"),
               ),
               TextField(
                 controller: emailController,
@@ -115,35 +111,6 @@ class _HomePageState extends State<HomePage> {
                 controller: phoneController,
                 decoration: const InputDecoration(labelText: "Phone Number"),
                 keyboardType: TextInputType.phone,
-              ),
-              TextField(
-                controller: birthDateController,
-                decoration: const InputDecoration(labelText: "Birth Date"),
-                readOnly: true,
-                onTap: () async {
-                  DateTime initialDate;
-
-                  try {
-                    initialDate = DateFormat(
-                      'yyyy-MM-dd',
-                    ).parse(birthDateController.text);
-                  } catch (e) {
-                    initialDate = DateTime.now();
-                  }
-
-                  DateTime? pickedDate = await showDatePicker(
-                    context: context,
-                    initialDate: initialDate,
-                    firstDate: DateTime(1900),
-                    lastDate: DateTime.now(),
-                  );
-
-                  if (pickedDate != null) {
-                    birthDateController.text = DateFormat(
-                      'yyyy-MM-dd',
-                    ).format(pickedDate);
-                  }
-                },
               ),
             ],
           ),
@@ -157,17 +124,13 @@ class _HomePageState extends State<HomePage> {
             ElevatedButton(
               onPressed: () {
                 setState(() {
-                  student.name = nameController.text;
-                  student.number = numberController.text;
-                  student.email = emailController.text;
-                  student.phone = phoneController.text;
-                  student.birthDate = birthDateController.text;
+                  employee.name = nameController.text;
+                  employee.number = numberController.text;
+                  employee.position = positionController.text;
+                  employee.email = emailController.text;
+                  employee.phone = phoneController.text;
 
-                  if (isNew) {
-                    saveStudent(student);
-                  } else {
-                    updateStudent(student, studentID);
-                  }
+                  saveEmployee(employee);
                 });
                 Navigator.pop(context);
               },
@@ -182,34 +145,73 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(60),
+        child: Material(
+          elevation: 8,
+          shadowColor: Colors.black38,
+          borderRadius: const BorderRadius.vertical(
+            bottom: Radius.circular(12),
+          ),
+          child: AppBar(
+            backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(bottom: Radius.circular(12)),
+            ),
+            centerTitle: true,
+            title: Text(
+              "Employee Database",
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+            ),
+          ),
+        ),
+      ),
+
       body: ValueListenableBuilder(
-        valueListenable: _studentBox.listenable(),
-        builder: (context, Box studentBox, _) {
-          final students = studentBox.values.toList();
+        valueListenable: _employeeBox.listenable(),
+        builder: (context, Box employeeBox, _) {
+          final employees = employeeBox.values.toList();
 
           return ListView(
             children:
-                students.map((st) {
-                  final student = Student(
+                employees.map((st) {
+                  final employee = Employee(
                     name: st["name"] ?? "",
                     number: st["number"] ?? "",
+                    position: st["position"] ?? "",
                     email: st["email"] ?? "",
                     phone: st["phone"] ?? "",
+                    address: st["address"] ?? "",
                     birthDate: st["birth_date"] ?? "",
-                    grades: st["grades"] ?? "",
+                    wage: st["wage"] ?? "",
+                    note: st["note"] ?? "",
                   );
 
-                  return StudentCard(
-                    student: student,
-                    edit: () => _editStudent(student, studentID: st["id"]),
-                    delete: () => deleteStudent(st["id"]),
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (_) => DetailPage(
+                                employee: employee,
+                                employeeID: st["id"],
+                                employeeBox: employeeBox,
+                                delete: () => deleteEmployee(st["id"]),
+                              ),
+                        ),
+                      );
+                    },
+                    child: EmployeeCard(employee: employee),
                   );
                 }).toList(),
           );
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _addStudent,
+        onPressed: _addEmployee,
         child: Icon(Icons.add),
       ),
     );

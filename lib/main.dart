@@ -7,8 +7,8 @@ void main() async {
   await Hive.initFlutter();
 
   // open Box
-  await Hive.openBox('student_box');
-  await Hive.openBox('student_id');
+  await Hive.openBox('employee_box');
+  await Hive.openBox('employee_id');
 
   runApp(const MainApp());
 }
@@ -18,8 +18,22 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        useMaterial3: true,
+        brightness: Brightness.light,
+      ),
+      darkTheme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.indigo,
+          brightness: Brightness.dark,
+        ),
+        useMaterial3: true,
+        brightness: Brightness.dark,
+      ),
+      themeMode: ThemeMode.system,
       home: HomePage(),
     );
   }
