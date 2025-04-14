@@ -2,7 +2,7 @@
 
 ## Description
 
-A project to learn about **Hive**, which is a lightweight and fast key-value (NoSQL) database written in pure Dart. It's a perfect fit for a Flutter app that needs a lightweight datastore with higher performance compared to other existing alternatives like _SQLite_ or _SharedPreferences_.
+This is an Employee Database application project with the main goal of learning **Hive**, which is a lightweight and fast key-value (NoSQL) database written in pure Dart. It's a perfect fit for a Flutter app that needs a lightweight datastore with higher performance compared to other existing alternatives like _SQLite_ or _SharedPreferences_.
 
 ## Programming Steps
 
@@ -44,16 +44,33 @@ final _dbBox = Hive.box(<nama_box>);
 6. Then, we'll be able to utilize the box for ordinary database / datastore features such like CRUD, these following lines are some examples of them,
 
 ```dart
-void writeData() {
-  final user = {'name': 'Beta', 'hobby': 'Swimming', 'age': 17};
-  _dbBox.put(1, user);
+void saveEmployee(Employee employee) {
+  // mimicking the behaviour of auto-increment
+  var employeeID = _idBox.get('employee_id');
+  if (employeeID == null) {
+    employeeID = 1;
+    _idBox.put('employee_id', employeeID);
+  } else {
+    employeeID++;
+  }
+
+  final newEmployee = {
+    'id': employeeID,
+    'name': employee.name,
+    'number': employee.number,
+    'position': employee.position,
+    'email': employee.email,
+    'phone': employee.phone,
+    'address': employee.address,
+    'birth_date': employee.birthDate,
+    'wage': employee.wage,
+    'note': employee.note,
+  };
+  _employeeBox.put(employeeID, newEmployee);
+  _idBox.put('employee_id', employeeID);
 }
 
-void readData() {
-  print(_dbBox.values);
-}
-
-void deleteData() {
-  _dbBox.delete(1);
+void deleteEmployee(int id) {
+  _employeeBox.delete(id);
 }
 ```

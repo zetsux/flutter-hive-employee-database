@@ -93,7 +93,34 @@ class _DetailPageState extends State<DetailPage> {
     setState(() => isEditing = false);
     ScaffoldMessenger.of(
       context,
-    ).showSnackBar(SnackBar(content: Text("Changes saved")));
+    ).showSnackBar(SnackBar(content: Text("Changes saved.")));
+  }
+
+  void _confirmAndDelete() async {
+    final isDeleting = await showDialog<bool>(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: Text('Delete Employee'),
+            content: Text('Are you sure you want to delete this employee?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: Text('Delete', style: TextStyle(color: Colors.red)),
+              ),
+            ],
+          ),
+    );
+
+    if (!mounted) return;
+    if (isDeleting == true) {
+      widget.delete();
+      Navigator.pop(context);
+    }
   }
 
   Widget _buildTextField(
@@ -193,6 +220,12 @@ class _DetailPageState extends State<DetailPage> {
       appBar: AppBar(
         title: Text(isEditing ? "Edit Employee" : "Employee Details"),
         actions: [
+          IconButton(
+            icon: Icon(Icons.delete_forever),
+            onPressed: () {
+              _confirmAndDelete();
+            },
+          ),
           IconButton(
             icon: Icon(isEditing ? Icons.check : Icons.edit),
             onPressed: () {
