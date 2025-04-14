@@ -84,8 +84,10 @@ void deleteEmployee(int id) {
 }
 ```
 
-7. Create the `EmployeeCard` component file which will get a single `Employee` data and shows some important & quick-access informations such as name, number, position, and contacts
+7. Create `Employee` file in the `/models` directory, which will generally represent the employee entity in the project.
 
-8. Create the view in `HomePage` that will read the data from `_employeeBox` using `_employeeBox.values`, convert it to `Employee` class, and then iterate through it by creating some clickable `EmployeeCard` using GestureDetector and Navigator to move into the `DetailPage`
+8. Create the `EmployeeCard` component file in the `/components` directory, which will get a single `Employee` data and shows some important & quick-access informations such as name, number, position, and contacts
 
-9. Create the view in `DetailPage` that will show every information of the employee and allow in-place editing using `TextField` with various keytype or handling system for the different variable types, also allows deletion of employee.
+9. Create the view in `HomePage` that will read the data from `_employeeBox` using `_employeeBox.values`, convert it to `Employee` class, and then iterate through it by creating some clickable `EmployeeCard` using GestureDetector and Navigator to move into the `DetailPage`
+
+10. Create the view in `DetailPage` that will show every information of the employee and allow in-place editing using `TextField` with various keytype or handling system for the different variable types, also allows deletion of employee.
