@@ -4,6 +4,10 @@
 
 This is a Simple Employee Database application project with the main goal of learning **Hive**, which is a lightweight and fast key-value (NoSQL) database written in pure Dart. It's a perfect fit for a Flutter app that needs a lightweight datastore with higher performance compared to other existing alternatives like _SQLite_ or _SharedPreferences_.
 
+## Demo Video URL
+
+[https://youtu.be/hUHCkELJoBI](https://youtu.be/hUHCkELJoBI)
+
 ## Features
 
 - Employee List
