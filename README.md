@@ -83,3 +83,9 @@ void deleteEmployee(int id) {
   _employeeBox.delete(id);
 }
 ```
+
+7. Create the `EmployeeCard` component file which will get a single `Employee` data and shows some important & quick-access informations such as name, number, position, and contacts
+
+8. Create the view in `HomePage` that will read the data from `_employeeBox` using `_employeeBox.values`, convert it to `Employee` class, and then iterate through it by creating some clickable `EmployeeCard` using GestureDetector and Navigator to move into the `DetailPage`
+
+9. Create the view in `DetailPage` that will show every information of the employee and allow in-place editing using `TextField` with various keytype or handling system for the different variable types, also allows deletion of employee.
